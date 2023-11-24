@@ -11,8 +11,9 @@ ROOT_DIR = Path(__file__).resolve().parent.parent.parent
 
 APP_DIR = ROOT_DIR / "core_apps"
 
-
-DEBUG = env.bool("DJANGO_DEBUG", False)
+# SECURITY WARNING: don't run with debug turned on in production!
+# DEBUG = env.bool("DJANGO_DEBUG",False)
+DEBUG = True
 
 
 # Application definition
@@ -150,6 +151,7 @@ DEFAULT_AUTO_FIELD = "django.db.models.BigAutoField"
 
 CORS_URLS_REGEX = r"^api/.*$"
 
+AUTH_USER_MODEL = "users.User"
 
 LOGGING = {
     "version": 1,
