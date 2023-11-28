@@ -5,13 +5,13 @@ import environ
 env = environ.Env()
 
 
-# Build paths inside the project like this: ROOT_DIR / 'subdir'.
+# Build paths inside the project like this: ROOT_DIR / "subdir".
 ROOT_DIR = Path(__file__).resolve().parent.parent.parent
 
 
 APP_DIR = ROOT_DIR / "core_apps"
 
-# SECURITY WARNING: don't run with debug turned on in production!
+# SECURITY WARNING: don"t run with debug turned on in production!
 # DEBUG = env.bool("DJANGO_DEBUG",False)
 DEBUG = True
 
@@ -35,6 +35,7 @@ THIRD_PARTY_APPS = [
     "phonenumber_field",
     "drf_yasg",
     "corsheaders",
+    'djcelery_email',
 ]
 
 LOCAL_APPS = [
@@ -152,6 +153,17 @@ DEFAULT_AUTO_FIELD = "django.db.models.BigAutoField"
 CORS_URLS_REGEX = r"^api/.*$"
 
 AUTH_USER_MODEL = "users.User"
+
+CELERY_BROKER_URL = env("CELERY_BROKER")
+CELERY_RESULT_BACKEND = CELERY_BROKER_URL
+CELERY_ACCEPT_CONTENT = ["json"]
+CELERY_TASK_SERIALIZER = "json"
+CELERY_RESULT_SERIALIZER = "json"
+CELERY_RESULT_BACKEND_MAX_RETRIES = 10
+CELERY_TASK_SEND_SENT_EVENT = True
+
+if USE_TZ:
+    CELERY_TIMEZONE = TIME_ZONE
 
 LOGGING = {
     "version": 1,
