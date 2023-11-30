@@ -5,6 +5,7 @@ from drf_yasg import openapi
 from drf_yasg.views import get_schema_view
 from rest_framework import permissions
 from dj_rest_auth.views import PasswordResetConfirmView
+import core_apps
 from core_apps.users.views import CustomUserDetailView
 
 
@@ -28,7 +29,8 @@ urlpatterns = [
     path("api/v1/auth/", include("dj_rest_auth.urls")),
     path("api/v1/auth/registration", include("dj_rest_auth.registration.urls")),
     path("api/v1/auth/password/reset/confirm/<uidb64>/<token>/", PasswordResetConfirmView.as_view(), name="password_reset_confirm"),
-    path("api/v1/profiles", include("core_apps.profiles.urls"))
+    path("api/v1/profiles", include("core_apps.profiles.urls")),
+    path("api/v1/articles", include("core_apps.articles.urls"))
 ]
 
 admin.site.site_header = "API Admin"
