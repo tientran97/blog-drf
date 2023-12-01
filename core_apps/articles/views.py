@@ -4,15 +4,13 @@ from rest_framework.response import Response
 from rest_framework import filters, generics, permissions, status
 from django_filters.rest_framework import DjangoFilterBackend
 from django.contrib.auth import get_user_model
-
-from core_apps.users import serializers
-from .models import Article, ArticleView
-from .serializers import ArticleSerializer
+from .models import Article, ArticleView, Like
+from .serializers import ArticleSerializer, LikeSerializer
 from .filters import ArticleFilter
 from .pagination import ArticlePagination
 from .renderers import ArticleJSONRenderer, ArticlesJSONRenderer
 from .permissions import IsOwnerOrReadOnly
-
+from django.shortcuts import get_object_or_404
 
 User = get_user_model()
 
@@ -56,3 +54,39 @@ class ArticleRetrieveUpdateDestroyView(generics.RetrieveUpdateDestroyAPIView):
         ArticleView.record_view(article=instance, user=request.user, viewer_ip=viewer_ip)
 
         return Response(serializer.data)
+
+
+class LikeArticleView(generics.CreateAPIView, generics.DestroyAPIView):
+    queryset = Like.objects.all()
+    serializer_class = LikeSerializer
+
+    def create(self, request, *args, **kwargs):
+        user = request.user
+        article_id = kwargs.get("article_id")
+        article = get_object_or_404(Article, id=article_id)
+
+        if Like.objects.filter(user=user, article=article).exists():
+            return Response(
+                {"detail": "You have already like this article"},
+                status=status.HTTP_400_BAD_REQUEST,
+            )
+
+        like = Like.objects.create(user=user, article=article)
+        like.save()
+
+        return Response(
+            {"detail": "Liked article!"},
+            status=status.HTTP_200_OK
+        )
+
+    def delete(self, request, *args, **kwargs):
+        user = request.user
+        article_id = kwargs.get("article_id")
+        article = get_object_or_404(Article, id=article_id)
+
+        like = get_object_or_404(Like, user=user, article=article)
+        like.delete()
+        return Response(
+            {"detail": "Removed like"},
+            status=status.HTTP_204_NO_CONTENT
+        )
