@@ -4,4 +4,4 @@ from django.utils.translation import gettext_lazy as _
 class ResponsesConfig(AppConfig):
     default_auto_field = "django.db.models.BigAutoField"
     name = "core_apps.responses"
-    verbose_name = "_(Responses)"
+    verbose_name = _("Responses")

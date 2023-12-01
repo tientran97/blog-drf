@@ -3,3 +3,4 @@ POSTGRES_PORT=5432
 POSTGRES_DB=authors-api
 POSTGRES_USER=tientran97
 POSTGRES_PASSWORD=Minhtien97
+DATABASE_URL=postgres://tientran97:Minhtien97@postgres:5432/authors-api
