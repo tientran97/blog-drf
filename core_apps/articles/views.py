@@ -1,34 +1,40 @@
 import logging
-from django.http import  Http404
-from rest_framework.response import Response
-from rest_framework import filters, generics, permissions, status
-from django_filters.rest_framework import DjangoFilterBackend
+
 from django.contrib.auth import get_user_model
-from .models import Article, ArticleView, Like
-from .serializers import ArticleSerializer, LikeSerializer
-from .filters import ArticleFilter
-from .pagination import ArticlePagination
-from .renderers import ArticleJSONRenderer, ArticlesJSONRenderer
-from .permissions import IsOwnerOrReadOnly
+from django.http import Http404
 from django.shortcuts import get_object_or_404
+from django_filters.rest_framework import DjangoFilterBackend
+from rest_framework import filters, generics, permissions, status
+from rest_framework.response import Response
+
+from .filters import ArticleFilter
+from .models import Article, ArticleView, Like
+from .pagination import ArticlePagination
+from .permissions import IsOwnerOrReadOnly
+from .renderers import ArticleJSONRenderer, ArticlesJSONRenderer
+from .serializers import ArticleSerializer, LikeSerializer
 
 User = get_user_model()
 
 logger = logging.getLogger(__name__)
+
 
 class ArticleListCreateView(generics.ListCreateAPIView):
     queryset = Article.objects.all()
     serializer_class = ArticleSerializer
     permission_classes = [permissions.IsAuthenticated]
     pagination_class = ArticlePagination
-    filter_backends = ( DjangoFilterBackend, filters.OrderingFilter, )
+    filter_backends = (
+        DjangoFilterBackend,
+        filters.OrderingFilter,
+    )
     filterset_class = ArticleFilter
     ordering_fields = ["created_at", "updated_at"]
     renderer_classes = [ArticlesJSONRenderer]
 
     def perform_create(self, serializer):
         serializer.save(author=self.request.user)
-        logger.info(f"article {serializer.data.get('title')} created by {self.request.user.first_name}") # type: ignore
+        logger.info(f"article {serializer.data.get('title')} created by {self.request.user.first_name}")  # type: ignore
 
 
 class ArticleRetrieveUpdateDestroyView(generics.RetrieveUpdateDestroyAPIView):
@@ -51,7 +57,9 @@ class ArticleRetrieveUpdateDestroyView(generics.RetrieveUpdateDestroyAPIView):
 
         viewer_ip = request.META.get("REMOTE_ADDR", None)
 
-        ArticleView.record_view(article=instance, user=request.user, viewer_ip=viewer_ip)
+        ArticleView.record_view(
+            article=instance, user=request.user, viewer_ip=viewer_ip
+        )
 
         return Response(serializer.data)
 
@@ -74,10 +82,7 @@ class LikeArticleView(generics.CreateAPIView, generics.DestroyAPIView):
         like = Like.objects.create(user=user, article=article)
         like.save()
 
-        return Response(
-            {"detail": "Liked article!"},
-            status=status.HTTP_200_OK
-        )
+        return Response({"detail": "Liked article!"}, status=status.HTTP_200_OK)
 
     def delete(self, request, *args, **kwargs):
         user = request.user
@@ -86,7 +91,4 @@ class LikeArticleView(generics.CreateAPIView, generics.DestroyAPIView):
 
         like = get_object_or_404(Like, user=user, article=article)
         like.delete()
-        return Response(
-            {"detail": "Removed like"},
-            status=status.HTTP_204_NO_CONTENT
-        )
+        return Response({"detail": "Removed like"}, status=status.HTTP_204_NO_CONTENT)

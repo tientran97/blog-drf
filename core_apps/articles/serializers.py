@@ -1,8 +1,9 @@
 from rest_framework import serializers
+
 from core_apps.articles.models import Article, ArticleView, Like
-from core_apps.profiles.serializers import ProfileSerializer
 from core_apps.bookmarks.models import Bookmark
 from core_apps.bookmarks.serializers import BookmarkSerializer
+from core_apps.profiles.serializers import ProfileSerializer
 from core_apps.responses.serializers import ResponseSerializer
 
 
@@ -83,7 +84,9 @@ class ArticleSerializer(serializers.ModelSerializer):
         instance.title = validated_data.get("title", instance.title)
         instance.description = validated_data.get("description", instance.description)
         instance.body = validated_data.get("body", instance.body)
-        instance.banner_image = validated_data.get("banner_image", instance.banner_image)
+        instance.banner_image = validated_data.get(
+            "banner_image", instance.banner_image
+        )
         instance.updated_at = validated_data.get("updated_at", instance.updated_at)
 
         if "tags" in validated_data:
@@ -94,7 +97,27 @@ class ArticleSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = Article
-        fields = ["id", "title", "slug", "tags", "estimated_reading_time", "author_info", "views", "description", "body", "banner_image", "average_rating", "bookmarks", "bookmarks_count","likes_count","reponses","responses_count", "created_at", "updated_at",]
+        fields = [
+            "id",
+            "title",
+            "slug",
+            "tags",
+            "estimated_reading_time",
+            "author_info",
+            "views",
+            "description",
+            "body",
+            "banner_image",
+            "average_rating",
+            "bookmarks",
+            "bookmarks_count",
+            "likes_count",
+            "reponses",
+            "responses_count",
+            "created_at",
+            "updated_at",
+        ]
+
 
 class LikeSerializer(serializers.ModelSerializer):
     article_title = serializers.CharField(source="article.title", read_only=True)

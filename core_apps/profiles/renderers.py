@@ -1,8 +1,10 @@
 import json
+
 from rest_framework.renderers import JSONRenderer
 
+
 class ProfileJSONRenderer(JSONRenderer):
-    charset = 'utf-8'
+    charset = "utf-8"
 
     def render(self, data, accepted_media_type=None, renderer_context=None):
         if renderer_context is None:
@@ -19,7 +21,7 @@ class ProfileJSONRenderer(JSONRenderer):
 
 
 class ProfilesJSONRenderer(JSONRenderer):
-    charset = 'utf-8'
+    charset = "utf-8"
 
     def render(self, data, accepted_media_type=None, renderer_context=None):
         if renderer_context is None:
