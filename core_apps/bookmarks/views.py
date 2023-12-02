@@ -1,10 +1,14 @@
+from uuid import UUID
+
+from django.db import IntegrityError
 from rest_framework import generics, permissions
+from rest_framework.exceptions import NotFound, ValidationError
+
+from core_apps.articles.models import Article
+
 from .models import Bookmark
 from .serializers import BookmarkSerializer
-from django.db import IntegrityError
-from rest_framework.exceptions import ValidationError, NotFound
-from core_apps.articles.models import Article
-from uuid import UUID
+
 
 class BookmarkCreateView(generics.CreateAPIView):
     queryset = Bookmark.objects.all()
@@ -28,6 +32,7 @@ class BookmarkCreateView(generics.CreateAPIView):
         except IntegrityError:
             raise ValidationError("You have already bookmarked this article")
 
+
 class BookmarkDestroyView(generics.DestroyAPIView):
     queryset = Bookmark.objects.all()
     lookup_field = "article_id"
@@ -47,11 +52,10 @@ class BookmarkDestroyView(generics.DestroyAPIView):
         except Bookmark.DoesNotExist:
             raise NotFound("Bookmark not found")
 
-        return Bookmark
+        return bookmark
 
     def perform_destroy(self, instance):
         user = self.request.user
         if instance.user != user:
             raise ValidationError("You cannot delete a bookmark that is not yours.")
         instance.delete()
-

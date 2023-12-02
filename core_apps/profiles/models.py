@@ -3,28 +3,34 @@ from django.db import models
 from django.utils.translation import gettext_lazy as _
 from django_countries.fields import CountryField
 from phonenumber_field.modelfields import PhoneNumberField
-from core_apps.common.models import TimeStampedModel
 
+from core_apps.common.models import TimeStampedModel
 
 User = get_user_model()
 
 
 class Profile(TimeStampedModel):
     class Gender(models.TextChoices):
-        MALE = "M", _("Male"),
-        FEMALE = "F", _("Female"),
-        OTHER = 'O', _("Other"),
+        MALE = (
+            "M",
+            _("Male"),
+        )
+        FEMALE = (
+            "F",
+            _("Female"),
+        )
+        OTHER = (
+            "O",
+            _("Other"),
+        )
 
     user = models.OneToOneField(User, related_name="profile", on_delete=models.CASCADE)
 
     phone_number = PhoneNumberField(
-        verbose_name=_("phone number"),
-        max_length=30,
-        default="+84123456789"
+        verbose_name=_("phone number"), max_length=30, default="+84123456789"
     )
     about_me = models.TextField(
-        verbose_name=_("about me"),
-        default="Say something about yourself."
+        verbose_name=_("about me"), default="Say something about yourself."
     )
     gender = models.CharField(
         verbose_name=_("gender"),
@@ -50,19 +56,14 @@ class Profile(TimeStampedModel):
         default="/profile_default.png",
     )
     twitter = models.CharField(
-        verbose_name=_("twitter handle"),
-        max_length=180,
-        blank=True
+        verbose_name=_("twitter handle"), max_length=180, blank=True
     )
     followers = models.ManyToManyField(
-        "self",
-        symmetrical=False,
-        related_name="following",
-        blank=True
+        "self", symmetrical=False, related_name="following", blank=True
     )
 
     def __str__(self):
-        return f"{self.user.first_name}'s Profile" # type: ignore
+        return f"{self.user.first_name}'s Profile"  # type: ignore
 
     def follow(self, profile):
         self.followers.add(profile)

@@ -9,5 +9,3 @@ class ProfilesConfig(AppConfig):
 
     def ready(self):
         from core_apps.profiles import signals
-        
-

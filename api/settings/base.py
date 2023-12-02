@@ -1,6 +1,6 @@
-
-from pathlib import Path
 from datetime import timedelta
+from pathlib import Path
+
 import environ
 
 env = environ.Env()
@@ -45,7 +45,7 @@ THIRD_PARTY_APPS = [
     "dj_rest_auth.registration",
     "taggit",
     "django_elasticsearch_dsl",
-    "django_elasticsearch_dsl_drf"
+    "django_elasticsearch_dsl_drf",
 ]
 
 LOCAL_APPS = [
@@ -187,7 +187,7 @@ REST_FRAMEWORK = {
     "DEFAULT_PERMISSION_CLASSES": [
         "rest_framework.permissions.IsAuthenticated",
     ],
-    "DEFAULT_FILTER_BACKENDS":[
+    "DEFAULT_FILTER_BACKENDS": [
         "django_filters.rest_framework.DjangoFilterBackend",
     ],
 }
@@ -224,11 +224,7 @@ ACCOUNT_USER_MODEL_USERNAME_FIELD = None
 ACCOUNT_USERNAME_REQUIRED = False
 
 
-ELASTICSEARCH_DSL = {
-    "default": {
-        "hosts": "elasticsearch:9200"
-    }
-}
+ELASTICSEARCH_DSL = {"default": {"hosts": "elasticsearch:9200"}}
 
 LOGGING = {
     "version": 1,

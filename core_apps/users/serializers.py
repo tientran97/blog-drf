@@ -1,13 +1,13 @@
-from dj_rest_auth.registration.serializers import RegisterSerializer
-
 from allauth.account.adapter import get_adapter
 from allauth.account.utils import setup_user_email
-from rest_framework import serializers
+from dj_rest_auth.registration.serializers import RegisterSerializer
 from django.contrib.auth import get_user_model
 from django_countries.serializer_fields import CountryField
 from phonenumber_field.serializerfields import PhoneNumberField
+from rest_framework import serializers
 
 User = get_user_model()
+
 
 class UserSerializer(serializers.ModelSerializer):
     gender = serializers.CharField(source="profile.gender")
@@ -18,7 +18,17 @@ class UserSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = User
-        fields = ["id", "email", "first_name", "last_name", "gender", "phone_number", "profile_photo", "country", "city"]
+        fields = [
+            "id",
+            "email",
+            "first_name",
+            "last_name",
+            "gender",
+            "phone_number",
+            "profile_photo",
+            "country",
+            "city",
+        ]
 
     def to_representation(self, instance):
         repersentation = super(UserSerializer, self).to_representation(instance)
@@ -35,15 +45,14 @@ class CustomeRegisterSerializer(RegisterSerializer):
     password1 = serializers.CharField(write_only=True)
     password2 = serializers.CharField(write_only=True)
 
-
     def get_cleaned_data(self):
         super().get_cleaned_data()
 
         return {
-            "email": self.validated_data.get("email", ""), # type: ignore
-            "first_name": self.validated_data.get("first_name", ""), # type: ignore
-            "last_name": self.validated_data.get("last_name", ""), # type: ignore
-            "password1": self.validated_data.get("password1", ""), # type: ignore
+            "email": self.validated_data.get("email", ""),  # type: ignore
+            "first_name": self.validated_data.get("first_name", ""),  # type: ignore
+            "last_name": self.validated_data.get("last_name", ""),  # type: ignore
+            "password1": self.validated_data.get("password1", ""),  # type: ignore
         }
 
     def save(self, request):
@@ -60,6 +69,3 @@ class CustomeRegisterSerializer(RegisterSerializer):
         user.last_name = self.cleaned_data.get("last_name")
 
         return user
-
-
-

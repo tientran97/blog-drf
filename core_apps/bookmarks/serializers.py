@@ -1,5 +1,7 @@
 from rest_framework import serializers
+
 from .models import Bookmark
+
 
 class BookmarkSerializer(serializers.ModelSerializer):
     article_title = serializers.CharField(source="article.title", read_only=True)
