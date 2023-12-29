@@ -29,7 +29,7 @@ volume:
 	docker volume inspect authors-src_local_postgres_data
 
 authors-db:
-	docker compose -f local.yml exec postgres psql --username=alphaogilo --dbname=authors-live
+	docker compose -f local.yml exec postgres psql --username=tientran97 --dbname=authors-api
 
 flake8:
 	docker compose -f local.yml exec api flake8 .
@@ -50,4 +50,4 @@ isort-diff:
 	docker compose -f local.yml exec api isort . --diff --skip env --skip migrations
 
 isort:
-	docker compose -f local.yml exec api isort . --skip venv --skip migrations	
+	docker compose -f local.yml exec api isort . --skip venv --skip migrations
